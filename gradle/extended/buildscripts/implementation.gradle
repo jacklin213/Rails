@@ -1,0 +1,83 @@
+// # = -                          Constants                          - = #
+
+ext.railsapi = project(':Rails')
+
+ext {
+    buildNumber = System.getenv().BUILD_NUMBER != null ? System.getenv().BUILD_NUMBER : '0'
+    ciSystem = System.getenv().ciSystem != null ? System.getenv().ciSystem : 'unknown'
+    commit = System.getenv().commit != null ? System.getenv().commit : 'unknown'
+
+    railsapiVersion = '0.1-DEVELOPMENT'
+}
+
+// # = -                        Apply Plugins                        - = #
+
+apply from: rails.file('gradle/extended/buildscripts/project.gradle')
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+// # = -                         Dependencies                        - = #
+
+dependencies {
+    compile rails
+}
+
+// # = -                           Manifest                          - = #
+
+jar {
+    classifier = 'release'
+    manifest {
+        attributes(
+                'Implementation-Version': "$version+$ciSystem-b${buildNumber}.git-$commit"
+        )
+    }
+}
+
+// # = -                    Evaluation Dependency                    - = #
+
+evaluationDependsOn rails.path
+
+// # = -                          Shadow Jar                         - = #
+
+shadowJar {
+    classifier = ''
+    exclude 'GradleStart**'
+    dependencies {
+        include project(rails.path)
+        include project(railsapi.path)
+    }
+    mergeServiceFiles()
+    exclude 'LICENSE', 'NOTICE'
+}
+
+assemble.dependsOn shadowJar
+
+// # = -                       Task - Create Jar                     - = #
+
+task createJar(type: Jar, dependsOn: [classes, railsapi.tasks.classes, rails.tasks.classes]) {
+    from railsapi.sourceSets.main.output
+    from rails.sourceSets.main.output
+    from sourceSets.main.output
+}
+
+// # = -                         Set Source Jar                      - = #
+
+setSourceJar {
+    from railsapi.sourceSets.main.allSource
+    from rails.sourceSets.main.allSource
+}
+
+// # = -                          Set Javadoc                        - = #
+
+setJavadocJar {
+    dependsOn railsapi.tasks.javadoc
+    dependsOn rails.tasks.javadoc
+    from railsapi.tasks.javadoc.destinationDir
+    from rails.tasks.javadoc.destinationDir
+}
+
+// # = -                           Artifacts                         - = #
+
+artifacts {
+    archives createJar
+}

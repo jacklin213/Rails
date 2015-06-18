@@ -1,0 +1,2 @@
+rootProject.name = 'Rails'
+include 'RailsAPI'

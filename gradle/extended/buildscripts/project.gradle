@@ -1,0 +1,35 @@
+// # = -                          Constants                          - = #
+
+ext.railsapi = rails.project('RailsAPI')
+
+// # = -                        Apply Plugins                        - = #
+
+apply from: railsapi.file('gradle/extended/buildscripts/project.gradle')
+
+// # = -                    Evaluation Dependency                    - = #
+
+evaluationDependsOn railsapi.path
+
+// # = -                           Manifest                          - = #
+
+jar {
+    manifest {
+        attributes(
+                'Specification-Name': railsapi.name,
+                'Specification-Version': railsapi.version,
+                'Specification-Vendor': railsapi.url
+        )
+    }
+}
+
+// # = -                          Checkstyle                         - = #
+
+checkstyle {
+    configProperties['suppressions'] = rails.file('gradle/extended/checkstyle/checkstyle-suppressions.xml')
+}
+
+// # = -                           License                           - = #
+
+license {
+    ext.name = 'Rails'
+}
