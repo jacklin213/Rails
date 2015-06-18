@@ -1,0 +1,3 @@
+[submodule "RailsAPI"]
+	path = RailsAPI
+	url = https://github.com/PoweredRails/RailsAPI
