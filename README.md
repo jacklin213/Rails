@@ -1,12 +1,12 @@
 # Rails [![Build Status](https://travis-ci.org/PoweredRails/Rails.svg)](https://travis-ci.org/PoweredRails/Rails)
 
 **Currently under planning for development**
+
 The official implementation for RailsAPI. It is licensed under the [Apache License]. 
 
 ## General Information
 * Rails is set to build with [Java 8] 
 * Development Status: **Planning**
-
 * [API]
 
 ## Contributing
